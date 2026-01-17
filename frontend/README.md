@@ -2,6 +2,8 @@
 
 WanderWise是一个基于React和Google Maps API的地图导航应用，用于展示地点并提供导航功能。
 
+项目整体系统流程与逐文件说明见：`../review.md`
+
 ## 功能特点
 
 - 在Google地图上展示地点标记

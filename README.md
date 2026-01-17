@@ -4,6 +4,10 @@ WanderWise is an intelligent travel planning platform that uses AI technology to
 
 ![WanderWise Logo](logo/wanderwise_1.png)
 
+## Code Review Guide
+
+- 系统流程 + 逐文件说明：`review.md`
+
 ## Features
 
 - 🗺️ Smart itinerary generation and planning
@@ -53,20 +57,16 @@ docker-compose up -d
 
 2. Install Python dependencies:
 ```bash
-cd fastApiProject
-pip install -r app/requirements.txt
+cd backend/fastApiProject
+pip install -r requirements.txt
 ```
 
-3. Set up environment variables (create .env file):
-```
-DATABASE_URL=mysql+pymysql://user:123456@localhost:3306/wanderwise
-ELASTICSEARCH_URL=http://localhost:9200
-OPENAI_API_KEY=your_openai_api_key
-```
+3. Set up environment variables (create `.env` file):
+   - 参考：`backend/fastApiProject/.env.example`
 
 4. Run the backend service:
 ```bash
-cd app
+cd backend/fastApiProject
 uvicorn main:app --reload --port 8082
 ```
 
@@ -99,7 +99,7 @@ npm run dev
 1. Deploy backend services and database using Docker Compose:
 ```bash
 cd backend
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+docker-compose up -d
 ```
 
 2. Or manually deploy the FastAPI application:
@@ -124,14 +124,3 @@ npm run build
 After starting the backend service, you can access the API documentation at:
 - Swagger UI: `http://localhost:8082/docs`
 - ReDoc: `http://localhost:8082/redoc`
-
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
-
-## Contact
-
-Project Maintainer - [Your Name](mailto:your.email@example.com)
-
-Project Link: [https://github.com/yourusername/WanderWise](https://github.com/yourusername/WanderWise)

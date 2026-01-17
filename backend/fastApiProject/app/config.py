@@ -1,4 +1,3 @@
-import os
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from functools import lru_cache
 
@@ -18,8 +17,9 @@ class Settings(BaseSettings):
     ELASTICSEARCH_INDEX_PREFIX: str = "wanderwise_"
 
     # 外部API
-    GOOGLE_MAPS_API_KEY: str = "AIzaSyD4K_0sPAIWmIE8jandYAlaNqMSTu9jAOY"
-    DEEP_SEEK_API_KEY: str = "sk-95981642162246b78a24497688378291"
+    # 建议通过 .env 提供真实值（避免把 key 提交到 repo）
+    GOOGLE_MAPS_API_KEY: str = ""
+    DEEP_SEEK_API_KEY: str = ""
 
 
 @lru_cache()

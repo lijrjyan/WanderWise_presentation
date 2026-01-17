@@ -1,14 +1,12 @@
 import json
 import re
+import os
 from typing import List, Dict, Any, Optional, Tuple
 from openai import OpenAI
 
-api_key = "BCR05T3-KCJM8W8-NQN65AH-Y10RNG2"
-base_url = "http://10.245.216.225:3001/api/v1/"
-
-
-
-model = "QualcommAI"
+api_key = os.getenv("LLM_API_KEY", "")
+base_url = os.getenv("LLM_BASE_URL", "")
+model = os.getenv("LLM_MODEL", "QualcommAI")
 class DeepSeekAPI:
     """DeepSeek API 服务封装"""
 
@@ -18,6 +16,8 @@ class DeepSeekAPI:
         Args:
             api_key: DeepSeek API密钥
         """
+        if not api_key or not base_url:
+            raise ValueError("Missing LLM_API_KEY/LLM_BASE_URL in environment")
         self.client = OpenAI(api_key=api_key, base_url=base_url)
         self.model = model
 
