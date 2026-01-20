@@ -123,6 +123,39 @@ LLM 输出是概率性的，早期会出现非 JSON 或结构不完整，导致�
 
 ---
 
+## 3.5) Repo 可证的 Trade-offs（至少 2 条，直接可讲）
+
+> 目标：把 trade-off 讲成“我为什么不选更复杂方案”的工程决策，而不是技术堆砌。
+
+### Trade-off 1：路线质量（最优） vs 延迟/可交付（MVP）
+
+- **What I traded off**：最优路径（TSP/OR-Tools/2-opt） vs 快速响应、稳定可交付的 MVP。
+- **Why**：面向交互式地图体验，延迟和稳定性更重要；先打通闭环再优化。
+- **Evidence**：`backend/fastApiProject/app/core/RoutePlanner.py`（最近邻贪心；并留有优化占位 `optimize_route`）。
+- **20 秒可复述（英文）**  
+  “For routing, I intentionally chose a greedy nearest-neighbor planner instead of an optimal solver. It’s fast and reliable for an interactive MVP, and I left room to add a lightweight optimizer like 2-opt later.”
+
+**风险等级**：Low（典型工程 trade-off，面试官通常喜欢）
+
+### Trade-off 2：结果覆盖/精度 vs 成本/延迟（路线采样点）
+
+- **What I traded off**：更密集采样（更高覆盖、更精细的周边召回） vs 更少查询次数（更低成本、更低延迟）。
+- **Why**：每个采样点都会触发 ES 周边检索；采样过密会放大查询次数、延迟和噪声。
+- **Evidence**：`backend/fastApiProject/app/external/GoogleMap.py`（`sample_distance=500` 米采样点）；`backend/fastApiProject/app/routers/router.py`（对 sampled_points 循环检索）。
+- **20 秒可复述（英文）**  
+  “To control latency and cost, I sampled route points by distance instead of querying every polyline point. That reduces the number of geo-queries while still covering the route well enough for nearby recommendations.”
+
+**风险等级**：Low–Medium（别说成“最优采样”，说成“可控成本/延迟的工程选择”）
+
+### Trade-off 3（可选）：地图状态实时性 vs 前端流畅度（debounce）
+
+- **What I traded off**：每次拖拽/缩放都即时同步状态 vs 限频更新减少抖动与重渲染。
+- **Evidence**：`frontend/src/components/map/MapContainer.tsx`（`onCenterChanged`/`onZoomChanged` 300ms debounce）。
+- **一句话可说（英文）**  
+  “On the frontend, I debounced map state updates to avoid excessive re-renders—slightly less real-time, but a smoother experience.”
+
+**风险等级**：Low（你能指出具体实现细节，会加分）
+
 ## 4) 验收项 4：Project outcomes and accomplishments（成果）
 
 **验收目标**：给出“可验证”的结果信号（哪怕是轻量指标）。
@@ -150,6 +183,30 @@ LLM 输出是概率性的，早期会出现非 JSON 或结构不完整，导致�
 **风险等级**：Medium（如果完全没有“体验/性能信号”，面试官会追问）
 
 ---
+
+## 4.5) “失败 → 修复”小故事（至少 1 条，直接可讲）
+
+> 目标：给面试官一个“真实遇到问题 → 你如何修复”的工程成熟度信号。
+
+### Failure Story 1：LLM 返回不是纯 JSON → 解析失败 → 加强解析与兜底
+
+- **Failure（发生了什么）**：LLM 的回复可能夹杂解释文本/格式不稳定，直接 `json.loads()` 会失败，导致下游流程中断或返回空结果。
+- **Fix（怎么修）**：从回复里用正则提取 JSON 子串，再严格解析；解析失败返回安全默认值（空列表/默认分数），避免整个请求崩掉。
+- **Evidence**：`backend/fastApiProject/app/external/DeepSeek.py`（正则提取 `[...]` / `{...}` + try/except fallback）。
+- **30 秒可复述（英文）**  
+  “Early on, the LLM sometimes returned extra text instead of clean JSON, which broke parsing and caused downstream failures. I fixed it by extracting the JSON payload with regex, validating it strictly, and adding safe fallbacks so the pipeline stays stable even when the LLM output isn’t perfect.”
+
+**风险等级**：Low（只要你不夸大成“彻底解决 hallucination”，就是高质量故事）
+
+### Failure Story 2（可选）：前端调用后端被 CORS 拦截 → 用 Vite Proxy 解决
+
+- **Failure**：本地开发时前端(5173)请求后端(8082)会触发浏览器 CORS 限制。
+- **Fix**：开发环境下把 baseURL 改为 `/api`，并在 Vite dev server 里配置 proxy 转发并 rewrite path。
+- **Evidence**：`frontend/src/services/api.ts`（dev 下返回 `/api`）；`frontend/vite.config.ts`（`server.proxy['/api']` → `http://localhost:8082`）。
+- **20 秒可复述（英文）**  
+  “During local development, I hit CORS issues between the Vite dev server and the API. I fixed it by using a `/api` proxy in Vite so the browser sees same-origin requests while the dev server forwards them to the backend.”
+
+**风险等级**：Low（很常见，但你能讲清楚原因和修复方式）
 
 ## 5) 验收项 5：Learnings and consideration in hindsight（反思）
 
@@ -218,4 +275,3 @@ LLM 输出是概率性的，早期会出现非 JSON 或结构不完整，导致�
 - [ ] 至少 2 个 trade-off（质量 vs 延迟 / 成本 vs 体验 / 最优 vs MVP）
 - [ ] 至少 1–2 个量化信号（哪怕是一次 demo 的 latency 近似值）
 - [ ] 至少 1 个“失败→修复”的小故事（LLM parse / 重复召回 / CORS proxy 都可）
-
