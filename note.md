@@ -2,6 +2,8 @@
 
 目标：10 分钟展示（Intro ~3min + Proud Project ~7min）。重点覆盖：角色、目标、问题解决、成果、反思。风格上与 Intuit 的使命/价值观对齐，回答行为题时可用 Amazon LP 作为结构（结果/冲突/印象题）。
 
+面试官逐条验收（checklist-style）用的材料见：`intuit_proud_project_checklist.md`
+
 ---
 
 ## 0) 项目事实速览（直接可讲）
@@ -282,4 +284,3 @@ LLM / NLP
 - 你在项目中的真实角色与贡献  
 - 量化结果（速度/准确率/体验）  
 - 一次真实的冲突或分歧（用于行为题）
-

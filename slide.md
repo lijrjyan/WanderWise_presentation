@@ -6,6 +6,8 @@
 3) 代码指引（方便你展示/熟悉实现）
 4) 对齐 Intuit 价值观的点
 
+如果你要按 Intuit 官方 bullet points 逐条验收（role / trade-offs / outcomes / hindsight），请配合 `intuit_proud_project_checklist.md` 使用。
+
 ---
 
 ## Slide 1 — Title & Agenda (0:30)
@@ -176,4 +178,3 @@
 
 - 不展示 `backend/fastApiProject/app/config.py` 中真实 key  
 - 准备 demo 输入：“Seattle food + skyline + 2 days”
-
